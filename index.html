@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Quickly store your files</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<header></header>
+	<div class="row-fluid">
+		<div class="container" ng-app="quickDrive">
+			<div class="col-md-6 text-center" ng-controller="UploadController">
+				<br>
+				<div class="row">
+					<h3>Drag and drop your files here</h3>
+					<div class="well well-lg drop-area" nv-file-drop uploader="uploader" over-class="over-drop-area">
+						<span class="glyphicon glyphicon-file" aria-hidden="true"></span>
+					</div>
+				</div>
+				<div class="row">
+					<h4><input type="checkbox" ng-model="private_share"> Upload files to my personal directory</h4>
+					<div ng-show="private_share">
+						<input type="text" class="form-control text-center" ng-model="share_directory" placeholder="Enter directory name" maxlength="10">
+						<p class="help-block">Choose the directory name wisely. Anyone with this name can access your files.</p>
+					</div>
+				</div>
+				<div class="row">
+					<h3>Upload queue</h3>
+                    <p>Queue length: {{ uploader.queue.length }}</p>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th width="50%">Name</th>
+                                <th ng-show="uploader.isHTML5">Size</th>
+                                <th ng-show="uploader.isHTML5">Progress</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in uploader.queue">
+                                <td><strong>{{ item.file.name }}</strong></td>
+                                <td ng-show="uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                <td ng-show="uploader.isHTML5">
+                                    <div class="progress" style="margin-bottom: 0;">
+                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <span ng-show="item.isSuccess && item.status"><i class="glyphicon glyphicon-ok"></i></span>
+                                    <span ng-show="item.isError && !item.status"><i class="glyphicon glyphicon-remove"></i></span>
+                                </td>
+                                <td nowrap>
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                        <span class="glyphicon glyphicon-upload"></span>
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                                        <span class="glyphicon glyphicon-trash"></span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div>
+                        <div>
+                            Queue progress:
+                            <div class="progress" style="">
+                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': uploader.progress + '%' }"></div>
+                            </div>
+                        </div>
+                        <div ng-show="upload_status == false" class="alert alert-danger" role="alert">{{error_message}}</div>
+                        <div ng-show="upload_status == true" class="alert alert-success" role="alert">{{error_message}}</div>
+                        <button type="button" class="btn btn-success btn-s" ng-click="uploader.uploadAll()" ng-disabled="!uploader.getNotUploadedItems().length">
+                            <span class="glyphicon glyphicon-upload"></span> Upload all
+                        </button>
+                        <button type="button" class="btn btn-danger btn-s" ng-click="uploader.clearQueue()" ng-disabled="!uploader.queue.length">
+                            <span class="glyphicon glyphicon-trash"></span> Remove all
+                        </button>
+                    </div>
+				</div>
+			</div>
+			<div class="col-md-6 text-center" ng-controller="ViewDirectoryController">
+				<div class="container-fluid">
+					<form class="row">
+						<br>
+						<h3>Enter directory name</h3>
+						<div class="form-group">
+						    <input type="text" class="form-control input-lg text-center" ng-model="selected_dir" ng-init="selected_dir = 'public'">
+						</div>
+					    <button type="submit" class="btn btn-primary col-md-4 col-md-offset-4" ng-click="goToDirectory(selected_dir)">GO</button>
+					</form>
+					<div class="row">
+						<br>
+						<h3>Files</h3>
+						<table class="table table-hover">
+							<thead>
+							    <tr>
+							        <th>Name</th>
+							        <th>Size</th>
+							        <th>Uploaded On</th>
+							    </tr>
+							</thead>
+							<tbody>
+							    <tr ng-repeat="file in directory_data">
+							        <td>
+								        <a ng-href="{{file.path}}"><strong>{{ file.name }}</strong></a>
+							        </td>
+							        <td>
+							        	{{ file.size/1024/1024|number:2 }} MB
+							        </td>
+							        <td>
+							        	{{file.uploaded_on}}
+							        </td>
+							    </tr>
+							</tbody>
+						</table>
+						<div class="text-center" ng-show="loading_files">
+							<h3><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Loading..</h3>
+						</div>
+					</div>
+				</div>				
+			</div>
+		</div>
+	</div>
+	<div class="row-fluid text-center" style="bottom:0px;">Developed by <a href="http://home.iitk.ac.in/~himnshu">Himanshu Choudhary</a></div>
+	<footer>
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/npm.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/angular.min.js"></script>
+		<script type="text/javascript" src="js/angular-file-upload.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</footer>
+</body>
+</html>
