@@ -1,12 +1,4 @@
 
 .drop-area {
 	font-size: 70pt;
-	/*border: 1px dashed black;*/
 }
-
-.over-drop-area {
-	color: blue;
-	font-size: 50pt;
-}
-
-.nv-file-over { border: dotted 3px red; }

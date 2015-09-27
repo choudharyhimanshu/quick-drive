@@ -81,8 +81,46 @@
                     </div>
 				</div>
 			</div>
-			<div class="col-md-6">
-				
+			<div class="col-md-6 text-center" ng-controller="ViewDirectoryController">
+				<div class="container-fluid">
+					<form class="row">
+						<br>
+						<h3>Enter directory name</h3>
+						<div class="form-group">
+						    <input type="text" class="form-control input-lg text-center" ng-model="selected_dir" ng-init="selected_dir = 'public'">
+						</div>
+					    <button type="submit" class="btn btn-primary col-md-4 col-md-offset-4" ng-click="goToDirectory(selected_dir)">GO</button>
+					</form>
+					<div class="row">
+						<br>
+						<h3>Files</h3>
+						<table class="table table-hover">
+							<thead>
+							    <tr>
+							        <th>Name</th>
+							        <th>Size</th>
+							        <th>Uploaded On</th>
+							    </tr>
+							</thead>
+							<tbody>
+							    <tr ng-repeat="file in directory_data">
+							        <td>
+								        <a ng-href="{{file.path}}"><strong>{{ file.name }}</strong></a>
+							        </td>
+							        <td>
+							        	{{ file.size/1024/1024|number:2 }} MB
+							        </td>
+							        <td>
+							        	{{file.uploaded_on}}
+							        </td>
+							    </tr>
+							</tbody>
+						</table>
+						<div class="text-center" ng-show="loading_files">
+							<h3><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span> Loading..</h3>
+						</div>
+					</div>
+				</div>				
 			</div>
 		</div>
 	</div>

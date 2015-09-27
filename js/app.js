@@ -2,6 +2,18 @@
 
 var app = angular.module('quickDrive', ['angularFileUpload']);
 
+app.factory('FetchDirectory', ['$http', function($http){
+	return {
+		getContent : function(dir_name){
+			return $http({
+			    url: 'script/fetch_directory.php', 
+			    method: "GET",
+			    params: {directory : dir_name}
+			});
+		}
+	}
+}])
+
 app.controller('UploadController', ['$rootScope','$scope','$http','FileUploader', function($rootScope,$scope,$http,FileUploader){
 	$scope.share_directory = 'public';
 	$scope.uploader = new FileUploader({
@@ -22,5 +34,16 @@ app.controller('UploadController', ['$rootScope','$scope','$http','FileUploader'
 			$scope.upload_status = false;
 		}
 		$scope.error_message = response.message;
+	};
+}]);
+
+app.controller('ViewDirectoryController', ['$scope','FetchDirectory', function($scope,FetchDirectory){
+	$scope.loading_files = false;
+	$scope.goToDirectory = function(dir){
+		$scope.loading_files = true;
+		FetchDirectory.getContent(dir).success(function(response){
+			$scope.directory_data = response;
+			$scope.loading_files = false;
+		});
 	};
 }]);
