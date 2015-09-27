@@ -1,6 +1,9 @@
 <?php
 	$directory = $_GET['directory'];
-	$path = dirname(dirname( __FILE__)) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR. $directory;
+	if($directory == ''){
+		die('null');
+	}
+	$path = dirname(dirname( __FILE__)) . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR. $directory.DIRECTORY_SEPARATOR;
 	$content = scandir($path);
 	$data = [];
 	foreach ($content as $file) {
