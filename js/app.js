@@ -39,8 +39,10 @@ app.controller('UploadController', ['$rootScope','$scope','$http','FileUploader'
 
 app.controller('ViewDirectoryController', ['$scope','FetchDirectory', function($scope,FetchDirectory){
 	$scope.loading_files = false;
+	$scope.directory_data = null;
 	$scope.goToDirectory = function(dir){
 		$scope.loading_files = true;
+		$scope.directory_data = null;
 		FetchDirectory.getContent(dir).success(function(response){
 			$scope.directory_data = response;
 			$scope.loading_files = false;
